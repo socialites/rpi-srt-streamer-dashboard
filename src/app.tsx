@@ -50,7 +50,7 @@ export function App() {
   }
 
   return (
-    <>
+    <div class="flex flex-col gap-2 max-w-md items-center justify-center">
         <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -84,7 +84,7 @@ export function App() {
       <div id="logs" class="flex flex-col gap-2 text-center text-sm text-red-500">
         {isError && <p>Error: {error.message}</p>}
       </div>
-    </>
+    </div>
   )
 }
 
