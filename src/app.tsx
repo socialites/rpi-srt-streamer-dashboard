@@ -1,43 +1,38 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import viteLogo from '/vite.svg'
-import './app.css'
+import { useQuery } from '@tanstack/react-query';
+import { getSystemStatus } from './apis';
+import './app.css';
+import { Button } from './components/button';
 
 export function App() {
-  const [count, setCount] = useState(0)
+  const { data: systemStatus, refetch, isError, error } = useQuery({
+    queryKey: ['systemStatus'],
+    placeholderData: {
+      hostname: window.location.hostname,
+      ip: 'Fetching...',
+      network_watcher: 'Fetching...',
+      srt_streamer: 'Fetching...',
+    },
+    queryFn: getSystemStatus,
+    refetchInterval: 10000,
+  })
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
+      <h1 class="text-4xl font-bold">{systemStatus?.hostname.toUpperCase() || window.location.hostname.toUpperCase()}</h1>
+      <p><strong>IP:</strong> {systemStatus?.ip}</p>
+      <p><strong>Network Watcher Status:</strong> {systemStatus?.network_watcher}</p>
+      <p><strong>SRT Streamer Status:</strong> {systemStatus?.srt_streamer}</p>
+
+      <div id="buttons" class="flex flex-col gap-2">
+        <Button className="bg-blue-500" onClick={() => refetch()}>Refresh</Button>
+        <Button className="bg-green-500" onClick={() => {}}>Restart Network Watcher</Button>
+        <Button className="bg-green-500" onClick={() => {}}>Restart SRT Streamer</Button>
+        <Button className="bg-red-500" onClick={() => {}}>Reboot</Button>
+        <Button className="bg-red-500" onClick={() => {}}>Shutdown</Button>
       </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
+      <div id="logs" class="flex flex-col gap-2">
+        {isError && <p>Error: {error.message}</p>}
       </div>
-      <p>
-        Check out{' '}
-        <a
-          href="https://preactjs.com/guide/v10/getting-started#create-a-vite-powered-preact-app"
-          target="_blank"
-        >
-          create-preact
-        </a>
-        , the official Preact + Vite starter
-      </p>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
     </>
   )
 }

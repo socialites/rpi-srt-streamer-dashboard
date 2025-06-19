@@ -1,5 +1,17 @@
 import { render } from 'preact'
-import './index.css'
 import { App } from './app.tsx'
+import './index.css'
 
-render(<App />, document.getElementById('app')!)
+import {
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
+render(
+    <QueryClientProvider client={queryClient}>
+        <App />
+    </QueryClientProvider>,
+    document.getElementById('app')!
+)
