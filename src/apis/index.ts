@@ -2,7 +2,7 @@ import type { SystemStatus } from '../../types';
 
 export async function getHealth() {
     try {
-        const response = await fetch('/api/health')
+        const response = await fetch('/health')
         if (!response.ok) {
             throw new Error(`${response.status} ${response.statusText}`)
         }
@@ -15,7 +15,7 @@ export async function getHealth() {
 
 export async function getSystemStatus() {
     try {
-        const response = await fetch('/api/system-status')
+        const response = await fetch('/api/status')
         if (!response.ok) {
             throw new Error(`${response.status} ${response.statusText}`)
         }
