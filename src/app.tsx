@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSystemStatus } from './apis';
+import { getSystemStatus, reboot, restartInstallAndStream, restartService } from './apis';
 import './app.css';
 import { Button } from './components/button';
 
 export function App() {
+
   const { data: systemStatus, refetch, isError, error } = useQuery({
     queryKey: ['systemStatus'],
     placeholderData: {
@@ -24,10 +25,11 @@ export function App() {
       <p><strong>SRT Streamer Status:</strong> {systemStatus?.srt_streamer}</p>
 
       <div id="buttons" class="flex flex-col gap-2">
-        <Button className="bg-blue-500" onClick={() => refetch()}>Refresh</Button>
-        <Button className="bg-green-500" onClick={() => {}}>Restart Network Watcher</Button>
-        <Button className="bg-green-500" onClick={() => {}}>Restart SRT Streamer</Button>
-        <Button className="bg-red-500" onClick={() => {}}>Reboot</Button>
+        <Button className="bg-blue-500" onClick={() => refetch()}>Refresh Status</Button>
+        <Button className="bg-yellow-500" onClick={() => restartService('network-watcher')}>Restart Network Watcher</Button>
+        <Button className="bg-yellow-500" onClick={() => restartService('srt-streamer')}>Restart SRT Streamer</Button>
+        <Button className="bg-yellow-500" onClick={() => restartInstallAndStream()}>Restart Install and Stream</Button>
+        <Button className="bg-red-500" onClick={() => reboot()}>Reboot</Button>
         <Button className="bg-red-500" onClick={() => {}}>Shutdown</Button>
       </div>
       <div id="logs" class="flex flex-col gap-2">
