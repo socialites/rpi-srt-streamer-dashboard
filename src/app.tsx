@@ -65,10 +65,13 @@ export function App() {
             transition={Slide}
         />
       <h1 class="text-4xl font-bold">{systemStatus?.hostname.toUpperCase() || window.location.hostname.toUpperCase()}</h1>
-      <p class="font-mono text-sm flex flex-col flex-wrap gap-1 text-center"><strong>IP(s):</strong> {systemStatus?.ip.split(' ').map(ip => <span class="font-mono text-sm">{ip}</span>)}</p>
-      <p><strong>Network Watcher Status:</strong> <span class={classNames("font-mono text-sm", systemStatus?.network_watcher === "active" ? "text-green-500" : systemStatus?.network_watcher === 'Fetching...' ? "text-yellow-500" : "text-red-500")}>{systemStatus?.network_watcher.toUpperCase()}</span></p>
-      <p><strong>SRT Streamer Status:</strong> <span class={classNames("font-mono text-sm", systemStatus?.srt_streamer === "active" ? "text-green-500" : systemStatus?.srt_streamer === 'Fetching...' ? "text-yellow-500" : "text-red-500")}>{systemStatus?.srt_streamer.toUpperCase()}</span></p>
-
+      {isError ? <p class="text-center text-sm text-red-500">Error occurred while fetching system status. See below for more details.</p> : (
+        <>
+          <p class="font-mono text-sm flex flex-col flex-wrap gap-1 text-center"><strong>IP(s):</strong> {systemStatus?.ip.split(' ').map(ip => <span class="font-mono text-sm">{ip}</span>)}</p>
+          <p><strong>Network Watcher Status:</strong> <span class={classNames("font-mono text-sm", systemStatus?.network_watcher === "active" ? "text-green-500" : systemStatus?.network_watcher === 'Fetching...' ? "text-yellow-500" : "text-red-500")}>{systemStatus?.network_watcher.toUpperCase()}</span></p>
+          <p><strong>SRT Streamer Status:</strong> <span class={classNames("font-mono text-sm", systemStatus?.srt_streamer === "active" ? "text-green-500" : systemStatus?.srt_streamer === 'Fetching...' ? "text-yellow-500" : "text-red-500")}>{systemStatus?.srt_streamer.toUpperCase()}</span></p>
+        </>
+      )}
       <div id="buttons" class="flex flex-col gap-2">
         <Button className="bg-blue-500" onClick={() => refetch()}>Refresh Status</Button>
         <Button className="bg-yellow-500" onClick={() => restartService('network-watcher')}>Restart Network Watcher</Button>
@@ -78,7 +81,7 @@ export function App() {
         <Button className="bg-red-500" onClick={() => promptReboot()}>Reboot</Button>
         <Button className="bg-red-500" onClick={() => promptShutdown()}>Shutdown</Button>
       </div>
-      <div id="logs" class="flex flex-col gap-2">
+      <div id="logs" class="flex flex-col gap-2 text-center text-sm text-red-500">
         {isError && <p>Error: {error.message}</p>}
       </div>
     </>
