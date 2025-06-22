@@ -1,4 +1,4 @@
-import type { SystemStatus } from '../../types';
+import type { SystemStatus } from '../types';
 
 export async function getHealth() {
     try {
