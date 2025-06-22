@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { NetworkStatus as NetworkStatusType } from "../types";
 
@@ -50,17 +51,13 @@ export function NetworkStatus() {
 
     return (
         <div className="flex flex-col gap-2 items-center">
-            <h2 className="text-2xl font-bold">Network Stats</h2>
 
             {/* Connection status */}
-            <div style={{ marginBottom: '1rem' }}>
-                <span style={{
-                    color: isConnected ? 'green' : 'red',
-                    fontWeight: 'bold'
-                }}>
+            <div className="mb-2">
+                <span className={classNames('font-bold', isConnected ? 'text-green-500' : 'text-red-500')}>
                     {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
                 </span>
-                {error && <span style={{ color: 'red', marginLeft: '1rem' }}>Error: {error}</span>}
+                {error && <span className="text-red-500 ml-2">Error: {error}</span>}
             </div>
 
             {/* Network data display */}
