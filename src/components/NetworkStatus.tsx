@@ -9,42 +9,75 @@ export function NetworkStatus() {
     const wsRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
-        // Create WebSocket connection
-        const ws = new WebSocket(`ws://${window.location.hostname}/api/network/ws`);
-        wsRef.current = ws;
+        let retryTimeout: number | null = null;
+        let isRetrying = false;
 
-        ws.onopen = () => {
-            console.log('WebSocket connection opened');
-            setIsConnected(true);
-            setError(null);
+        const connectWebSocket = () => {
+            if (isRetrying) return;
+
+            // Create WebSocket connection
+            const ws = new WebSocket(`ws://${window.location.hostname}/api/network/ws`);
+            wsRef.current = ws;
+
+            ws.onopen = () => {
+                console.log('WebSocket connection opened');
+                setIsConnected(true);
+                setError(null);
+                isRetrying = false;
+            };
+
+            ws.onmessage = (msg) => {
+                try {
+                    const data = JSON.parse(msg.data) as NetworkStatusType;
+                    console.log('Network stats:', data);
+                    setNetworkStatus(data);
+                } catch (err) {
+                    console.error('Error parsing WebSocket message:', err);
+                    setError('Failed to parse network data');
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                setError('WebSocket connection error');
+                setIsConnected(false);
+
+                // Schedule retry if not already retrying
+                if (!isRetrying) {
+                    isRetrying = true;
+                    retryTimeout = window.setTimeout(() => {
+                        isRetrying = false;
+                        connectWebSocket();
+                    }, 1000);
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket connection closed');
+                setIsConnected(false);
+
+                // Schedule retry if not already retrying
+                if (!isRetrying) {
+                    isRetrying = true;
+                    retryTimeout = window.setTimeout(() => {
+                        isRetrying = false;
+                        connectWebSocket();
+                    }, 1000);
+                }
+            };
         };
 
-        ws.onmessage = (msg) => {
-            try {
-                const data = JSON.parse(msg.data) as NetworkStatusType;
-                console.log('Network stats:', data);
-                setNetworkStatus(data);
-            } catch (err) {
-                console.error('Error parsing WebSocket message:', err);
-                setError('Failed to parse network data');
-            }
-        };
-
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-            setError('WebSocket connection error');
-            setIsConnected(false);
-        };
-
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
-            setIsConnected(false);
-        };
+        // Start the initial connection
+        connectWebSocket();
 
         // Cleanup function
         return () => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.close();
+            isRetrying = false;
+            if (retryTimeout) {
+                clearTimeout(retryTimeout);
+            }
+            if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                wsRef.current.close();
             }
         };
     }, []); // Empty dependency array - only run once
