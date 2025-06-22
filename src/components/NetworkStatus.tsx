@@ -105,7 +105,7 @@ export function NetworkStatus() {
                     ))}
                 </div>
             ) : (
-                <p className="text-sm text-gray-500">No network data available</p>
+                <p className="text-sm text-gray-500">No bitrate transfer data available</p>
             )}
         </div>
     );
