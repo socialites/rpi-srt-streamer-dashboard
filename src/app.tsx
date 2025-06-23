@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { useCallback, useState } from 'preact/hooks';
 import { Slide, ToastContainer } from 'react-toastify';
 import { getSystemStatus } from './apis';
 import './app.css';
 import { ControlButtons } from './components/ControlButtons';
 import { NetworkStatus } from './components/NetworkStatus';
+import StreamPreview from './components/StreamPreview';
 import { SystemStatus } from './components/SystemStatus';
 
 export function App() {
@@ -20,6 +22,12 @@ export function App() {
     refetchInterval: 10000,
   })
 
+  const [streamPreview, setStreamPreview] = useState<boolean>(false);
+
+  const toggleStreamPreview = useCallback(() => {
+    setStreamPreview(!streamPreview);
+  }, [streamPreview]);
+
   return (
     <div class="flex flex-col gap-2 max-w-md items-center justify-center">
         <ToastContainer
@@ -35,9 +43,10 @@ export function App() {
             theme="dark"
             transition={Slide}
         />
+        {streamPreview && <StreamPreview />}
         <SystemStatus systemStatus={systemStatus} isError={isError} />
         <NetworkStatus />
-        <ControlButtons refetch={refetch} />
+        <ControlButtons refetch={refetch} toggleStreamPreview={toggleStreamPreview} />
 
         {isError && <p class="text-center text-sm text-red-500">Error: {error.message}</p>}
     </div>
