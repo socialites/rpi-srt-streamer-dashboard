@@ -43,9 +43,9 @@ export function App() {
             theme="dark"
             transition={Slide}
         />
-        {streamPreview && <StreamPreview />}
         <SystemStatus systemStatus={systemStatus} isError={isError} />
         <NetworkStatus />
+        {streamPreview && <StreamPreview />}
         <ControlButtons refetch={refetch} toggleStreamPreview={toggleStreamPreview} />
 
         {isError && <p class="text-center text-sm text-red-500">Error: {error.message}</p>}
