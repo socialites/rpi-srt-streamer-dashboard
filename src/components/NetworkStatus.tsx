@@ -29,7 +29,6 @@ export function NetworkStatus() {
             ws.onmessage = (msg) => {
                 try {
                     const data = JSON.parse(msg.data) as NetworkStatusType;
-                    console.log('Network stats:', data);
                     setNetworkStatus(data);
                 } catch (err) {
                     console.error('Error parsing WebSocket message:', err);
@@ -94,15 +93,25 @@ export function NetworkStatus() {
             </div>
 
             {/* Network data display */}
-            {networkStatus ? (
+            {networkStatus && Object.keys(networkStatus).length > 0 ? (
                 <div class="flex flex-row gap-2">
-                    {Object.entries(networkStatus).map(([interfaceName, stats]) => (
-                        <div key={interfaceName} className="flex flex-col gap-2 border border-gray-300 rounded-md p-2">
-                            <h3 className="text-sm font-bold">{interfaceName}</h3>
-                            <p className="text-sm">In: {stats.in_kbps.toFixed(2)} kbps</p>
-                            <p className="text-sm">Out: {stats.out_kbps.toFixed(2)} kbps</p>
-                        </div>
-                    ))}
+                    {Object.entries(networkStatus).map(([interfaceName, stats]) => {
+                        if ('in_kbps' in stats && 'out_kbps' in stats) {
+                            return (
+                                <div key={interfaceName} className="flex flex-col gap-2 border border-gray-300 rounded-md p-2">
+                                    <h3 className="text-sm font-bold">{interfaceName}</h3>
+                                    <p className="text-sm">In: {stats.in_kbps.toFixed(2)} kbps</p>
+                                    <p className="text-sm">Out: {stats.out_kbps.toFixed(2)} kbps</p>
+                                </div>
+                            )
+                        }
+                        return (
+                            <div key={interfaceName} className="flex flex-col gap-2 border border-gray-300 rounded-md p-2">
+                                <h3 className="text-sm font-bold">{interfaceName}</h3>
+                                <p className="text-sm">No bitrate transfer data available</p>
+                            </div>
+                        );
+                    })}
                 </div>
             ) : (
                 <p className="text-sm text-gray-500">No bitrate transfer data available</p>
