@@ -17,6 +17,8 @@ export function App() {
       ip: "Fetching...",
       network_watcher: 'Fetching...',
       srt_streamer: 'Fetching...',
+      ap_ssid: 'Fetching...',
+      ap_status: 'Fetching...',
     },
     queryFn: getSystemStatus,
     refetchInterval: 10000,

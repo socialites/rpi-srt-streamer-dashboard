@@ -38,7 +38,8 @@ export function ControlButtons({ refetch, toggleStreamPreview }: { refetch: () =
     return (
         <div id="buttons" class="flex flex-col gap-2">
             <Button className="bg-blue-500" onClick={toggleStreamPreview}>Toggle Stream Preview</Button>
-            <Button className="bg-blue-500" onClick={() => refetch()}>Refresh Status</Button>
+            <Button className="bg-blue-500" onClick={() => refetch()}>Force Refresh Status</Button>
+            <Button className="bg-yellow-500" onClick={() => restartService('ap')}>Restart Access Point</Button>
             <Button className="bg-yellow-500" onClick={() => restartService('network-watcher')}>Restart Network Watcher</Button>
             <Button className="bg-yellow-500" onClick={() => restartService('camlink')}>Restart Camlink</Button>
             <Button className="bg-yellow-500" onClick={() => restartService('srt-streamer')}>Restart SRT Streamer</Button>

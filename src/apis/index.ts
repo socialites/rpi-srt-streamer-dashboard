@@ -26,7 +26,7 @@ export async function getSystemStatus() {
     }
 }
 
-export async function restartService(service: 'network-watcher' | 'srt-streamer' | 'camlink') {
+export async function restartService(service: 'network-watcher' | 'srt-streamer' | 'camlink' | 'ap') {
     try {
         const response = await fetch(`/api/restart/${service}`, {
             method: 'POST',

@@ -3,6 +3,8 @@ export type SystemStatus = {
     ip: string;
     network_watcher: string;
     srt_streamer: string;
+    ap_ssid: string;
+    ap_status: "up" | "down" | "Fetching...";
 }
 
 export interface NetworkStatus {
