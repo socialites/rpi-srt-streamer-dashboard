@@ -19,6 +19,7 @@ export function App() {
       srt_streamer: 'Fetching...',
       ap_ssid: 'Fetching...',
       ap_status: 'Fetching...',
+      ap_password: 'not available',
     },
     queryFn: getSystemStatus,
     refetchInterval: 10000,
