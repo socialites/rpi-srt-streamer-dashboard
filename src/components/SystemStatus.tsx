@@ -54,7 +54,8 @@ export function SystemStatus({ systemStatus, isError }: { systemStatus: SystemSt
                     <p><strong>Access Point Password:</strong> <span class={classNames("font-mono text-sm", {
                         "bg-black text-black px-2 py-1 rounded-md": !showApPassword && systemStatus?.ap_password !== 'not available',
                         "bg-transparent text-white": showApPassword || systemStatus?.ap_password === 'not available',
-                    })}>{systemStatus?.ap_password === 'not available' ? 'not available' : showApPassword ? systemStatus?.ap_password : '********'}</span> {systemStatus?.ap_password !== 'not available' && <><button class="text-base text-blue-500 cursor-pointer border-2 rounded-md px-2 py-1 border-blue-500" onClick={toggleApPassword}>{showApPassword ? 'HIDE' : 'SHOW'}</button> <button class="text-base text-blue-500 cursor-pointer border-2 rounded-md px-2 py-1 border-blue-500" onClick={copyToClipboard}>COPY</button></>}</p>
+                    })}>{systemStatus?.ap_password === 'not available' ? 'not available' : showApPassword ? systemStatus?.ap_password : '********'}</span></p>
+                    <div class="flex flex-row gap-2 justify-center">{systemStatus?.ap_password !== 'not available' && <><button class="text-base text-blue-500 cursor-pointer border-2 rounded-md px-2 py-1 border-blue-500" onClick={toggleApPassword}>{showApPassword ? 'HIDE' : 'SHOW'}</button> <button class="text-base text-blue-500 cursor-pointer border-2 rounded-md px-2 py-1 border-blue-500" onClick={copyToClipboard}>COPY</button></>}</div>
                 </>
             )}
          </>
