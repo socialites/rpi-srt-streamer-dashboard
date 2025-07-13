@@ -25,6 +25,7 @@ export function SystemStatus({ systemStatus, isError }: { systemStatus: SystemSt
         if (!window.isSecureContext) {
             try {
                 unsecuredCopyToClipboard(systemStatus.ap_password);
+                toast.success('Access point password copied to clipboard');
             } catch (error) {
                 toast.error('Unable to copy to clipboard');
             }
@@ -33,6 +34,7 @@ export function SystemStatus({ systemStatus, isError }: { systemStatus: SystemSt
         if (window.isSecureContext && navigator.clipboard) {
             try {
                 navigator.clipboard.writeText(systemStatus.ap_password);
+                toast.success('Access point password copied to clipboard');
             } catch (error) {
                 toast.error('Unable to copy to clipboard');
             }
