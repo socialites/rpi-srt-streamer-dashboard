@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useCallback, useState } from 'preact/hooks';
 import { toast } from 'react-toastify';
 import type { SystemStatus as SystemStatusType } from "../types";
+import { unsecuredCopyToClipboard } from '../utils';
 
 export function SystemStatus({ systemStatus, isError }: { systemStatus: SystemStatusType | undefined, isError: boolean }) {
 
@@ -16,11 +17,25 @@ export function SystemStatus({ systemStatus, isError }: { systemStatus: SystemSt
     }, [showApPassword, systemStatus?.ap_password]);
 
     const copyToClipboard = useCallback(() => {
-        if (systemStatus?.ap_password && systemStatus.ap_password !== 'not available') {
-            navigator.clipboard.writeText(systemStatus.ap_password);
-            toast.success('Access point password copied to clipboard');
-        } else {
+        if (!systemStatus?.ap_password || systemStatus.ap_password === 'not available') {
             toast.error('Access point password not available');
+            return;
+        }
+
+        if (!window.isSecureContext) {
+            try {
+                unsecuredCopyToClipboard(systemStatus.ap_password);
+            } catch (error) {
+                toast.error('Unable to copy to clipboard');
+            }
+        }
+
+        if (window.isSecureContext && navigator.clipboard) {
+            try {
+                navigator.clipboard.writeText(systemStatus.ap_password);
+            } catch (error) {
+                toast.error('Unable to copy to clipboard');
+            }
         }
     }, [systemStatus?.ap_password]);
 
