@@ -81,7 +81,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                             </Button>
                             {network.in_use && (
                                 <div class="absolute top-0 right-0 p-2">
-                                    <Button className="bg-red-500 w-4 h-4 text-white text-xs !p-4 flex items-center justify-center rounded-md" onClick={() => promptForgetNetwork(network.ssid)}>🗑️</Button>
+                                    <Button className="bg-red-500 w-4 h-4 text-white text-xs !p-3 flex items-center justify-center rounded-md" onClick={() => promptForgetNetwork(network.ssid)}>🗑️</Button>
                                 </div>
                             )}
                         </div>
