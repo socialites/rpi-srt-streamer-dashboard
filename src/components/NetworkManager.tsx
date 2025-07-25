@@ -70,7 +70,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                     {networks && networks.length && networks?.map((network) => (
                         <div class='w-full h-auto relative'>
                             <Button className={`bg-blue-500 text-white p-2 rounded-md w-full ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => network.in_use ? promptDisconnectFromNetwork(network.ssid) : promptConnectToNetwork(network.ssid)}>
-                                <div class="flex flex-col gap-2">
+                                <div class="flex flex-col gap-2 items-start justify-start">
                                     <p>{network.ssid} {network.in_use && '(Connected)'}</p>
                                     <div class="flex flex-row gap-2 text-xs">
                                         <p>Speed: {network.rate}</p>
