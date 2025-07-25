@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { toast, type ToastContentProps } from 'react-toastify';
-import { connectToNetwork, getNetworks } from "../apis";
-import { Modal } from './Modal';
+import { connectToNetwork, disconnectFromNetwork, forgetNetwork, getNetworks } from "../apis";
 import { Button } from './button';
+import { Modal } from './Modal';
+import { SplitButtons } from './SplitButtons';
 
-const promptId = 'connect-to-network-prompt';
+const connectPromptId = 'connect-to-network-prompt';
+const disconnectPromptId = 'disconnect-from-network-prompt';
+const forgetNetworkPromptId = 'forget-network-prompt';
 
 export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager: () => void }) {
     const { data: networks, isError, error, refetch } = useQuery({
@@ -15,14 +18,41 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
     });
 
     const promptConnectToNetwork = useCallback((SSID: string) => {
-        toast(Form, {
-            toastId: promptId,
-            data: {
-                SSID,
-            },
+        toast(<Form onCancel={() => toast.dismiss(connectPromptId)} SSID={SSID} />, {
             autoClose: false,
+            toastId: connectPromptId,
             draggable: false,
         })
+    }, []);
+
+    const promptDisconnectFromNetwork = useCallback((SSID: string) => {
+        toast(<SplitButtons
+            onConfirm={() => disconnectFromNetwork(SSID)}
+            onCancel={() => toast.dismiss(disconnectPromptId)}
+            title={`Disconnect from ${SSID}`}
+            message={`Are you sure you want to disconnect from ${SSID}?`} />, {
+                toastId: disconnectPromptId,
+                type: 'error',
+                closeButton: false,
+                closeOnClick: false,
+                className: 'p-0 w-[400px] border border-red-600/40',
+            }
+        )
+    }, []);
+
+    const promptForgetNetwork = useCallback((SSID: string) => {
+        toast(<SplitButtons
+            onConfirm={() => forgetNetwork(SSID)}
+            onCancel={() => toast.dismiss(forgetNetworkPromptId)}
+            title={`Forget ${SSID}`}
+            message={`Are you sure you want to forget ${SSID}?`} />, {
+                toastId: forgetNetworkPromptId,
+                type: 'error',
+                closeButton: false,
+                closeOnClick: false,
+                className: 'p-0 w-[400px] border border-red-600/40',
+            }
+        )
     }, []);
 
     useEffect(() => {
@@ -33,21 +63,28 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
 
     return (
         <Modal onPress={toggleNetworkManager}>
-            <div class="bg-white p-4 rounded-md w-full h-full flex flex-col gap-2 text-black z-10 xl:max-w-lg xl:max-h-1/2 max-h-5/6" onClick={e => e.stopPropagation()}>
+            <div class="bg-slate-800 p-4 rounded-md w-full h-full flex flex-col gap-2 text-white z-10 xl:max-w-lg xl:max-h-1/2 max-h-5/6" onClick={e => e.stopPropagation()}>
                 <h1 class="text-2xl font-bold">Network Manager</h1>
                 <h2 class="text-lg font-bold">Networks</h2>
                 <div class="flex flex-col gap-2 overflow-y-auto py-2 h-full">
                     {networks && networks.length && networks?.map((network) => (
-                        <Button className={`bg-blue-500 text-white p-2 rounded-md ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => promptConnectToNetwork(network.ssid)}>
-                            <div class="flex flex-col gap-2">
-                                <p>{network.ssid} {network.in_use && '(Connected)'}</p>
-                                <div class="flex flex-row gap-2 text-xs">
-                                    <p>Speed: {network.rate}</p>
-                                    <p>Signal Strength: {network.signal}</p>
-                                    <p>{network.security}</p>
+                        <div class='w-full h-auto relative'>
+                            <Button className={`bg-blue-500 text-white p-2 rounded-md ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => network.in_use ? promptDisconnectFromNetwork(network.ssid) : promptConnectToNetwork(network.ssid)}>
+                                <div class="flex flex-col gap-2">
+                                    <p>{network.ssid} {network.in_use && '(Connected)'}</p>
+                                    <div class="flex flex-row gap-2 text-xs">
+                                        <p>Speed: {network.rate}</p>
+                                        <p>Signal Strength: {network.signal}</p>
+                                        <p>{network.security}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </Button>
+                            </Button>
+                            {network.in_use && (
+                                <div class="absolute top-0 right-0 p-2">
+                                    <Button className="bg-red-500 text-white p-2 rounded-md" onClick={() => promptForgetNetwork(network.ssid)}>🗑️</Button>
+                                </div>
+                            )}
+                        </div>
                     ))}
                     {
                         (!networks || networks?.length === 0) && (
@@ -64,7 +101,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
     )
 }
 
-function Form({ data, closeToast }: ToastContentProps<{ SSID: string }>) {
+function Form({ onCancel, SSID }: Partial<ToastContentProps> & { onCancel: () => void, SSID: string }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
@@ -74,17 +111,17 @@ function Form({ data, closeToast }: ToastContentProps<{ SSID: string }>) {
             return;
         }
         try {
-            await connectToNetwork(data.SSID, password);
-            closeToast();
+            await connectToNetwork(SSID, password);
+            onCancel();
         } catch (error) {
             setError('Failed to connect to network');
         }
-    }, [password, data.SSID, closeToast]);
+    }, [password, SSID, onCancel]);
 
     return (
       <div className="flex flex-col w-full gap-2">
-        <h3 className="text-zinc-800 text-sm font-semibold">Connect to {data.SSID}</h3>
-        <p className="text-sm">Enter the password for {data.SSID}</p>
+        <h3 className="text-white text-sm font-semibold">Connect to {SSID}</h3>
+        <p className="text-sm">Enter the password for {SSID}</p>
         <form>
           <input type="password" className="w-full border border-purple-600/40 rounded-md resize-none" value={password} onChange={e => setPassword((e.target as HTMLInputElement).value)} />
         </form>
