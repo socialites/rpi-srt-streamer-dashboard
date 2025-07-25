@@ -20,6 +20,8 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
             data: {
                 SSID,
             },
+            autoClose: false,
+            draggable: false,
         })
     }, []);
 
@@ -34,7 +36,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
             <div class="bg-white p-4 rounded-md w-full h-full flex flex-col gap-2 text-black z-10 xl:max-w-lg xl:max-h-1/2 max-h-5/6" onClick={e => e.stopPropagation()}>
                 <h1 class="text-2xl font-bold">Network Manager</h1>
                 <h2 class="text-lg font-bold">Networks</h2>
-                <div class="flex flex-col gap-2 overflow-y-auto  h-full">
+                <div class="flex flex-col gap-2 overflow-y-auto py-2 h-full">
                     {networks && networks.length && networks?.map((network) => (
                         <Button className={`bg-blue-500 text-white p-2 rounded-md ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => promptConnectToNetwork(network.ssid)}>
                             <div class="flex flex-col gap-2">
@@ -42,6 +44,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                                 <div class="flex flex-row gap-2 text-xs">
                                     <p>Speed: {network.rate}</p>
                                     <p>Signal Strength: {network.signal}</p>
+                                    <p>{network.security}</p>
                                 </div>
                             </div>
                         </Button>
@@ -83,7 +86,7 @@ function Form({ data, closeToast }: ToastContentProps<{ SSID: string }>) {
         <h3 className="text-zinc-800 text-sm font-semibold">Connect to {data.SSID}</h3>
         <p className="text-sm">Enter the password for {data.SSID}</p>
         <form>
-          <input type="password" className="w-full border border-purple-600/40 rounded-md resize-none h-[100px]" value={password} onChange={e => setPassword((e.target as HTMLInputElement).value)} />
+          <input type="password" className="w-full border border-purple-600/40 rounded-md resize-none" value={password} onChange={e => setPassword((e.target as HTMLInputElement).value)} />
         </form>
         <Button onClick={handleSubmit}>Submit</Button>
         {error && <p className="text-red-500">{error}</p>}
