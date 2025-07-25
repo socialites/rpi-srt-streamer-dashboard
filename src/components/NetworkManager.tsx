@@ -69,7 +69,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                 <div class="flex flex-col gap-2 overflow-y-auto py-2 h-full">
                     {networks && networks.length && networks?.map((network) => (
                         <div class='w-full h-auto relative'>
-                            <Button className={`bg-blue-500 text-white p-2 rounded-md ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => network.in_use ? promptDisconnectFromNetwork(network.ssid) : promptConnectToNetwork(network.ssid)}>
+                            <Button className={`bg-blue-500 text-white p-2 rounded-md w-full ${network.in_use ? 'bg-green-500' : ''}`} onClick={() => network.in_use ? promptDisconnectFromNetwork(network.ssid) : promptConnectToNetwork(network.ssid)}>
                                 <div class="flex flex-col gap-2">
                                     <p>{network.ssid} {network.in_use && '(Connected)'}</p>
                                     <div class="flex flex-row gap-2 text-xs">
@@ -81,7 +81,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                             </Button>
                             {network.in_use && (
                                 <div class="absolute top-0 right-0 p-2">
-                                    <Button className="bg-red-500 text-white p-2 rounded-md" onClick={() => promptForgetNetwork(network.ssid)}>🗑️</Button>
+                                    <Button className="bg-red-500 w-4 h-4 text-white p-2 rounded-md" onClick={() => promptForgetNetwork(network.ssid)}>🗑️</Button>
                                 </div>
                             )}
                         </div>
