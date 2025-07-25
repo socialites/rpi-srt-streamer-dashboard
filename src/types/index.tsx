@@ -8,6 +8,14 @@ export type SystemStatus = {
     ap_password: "not available" | string;
 }
 
+export type Network = {
+    ssid: string;
+    in_use: boolean;
+    rate: string;
+    signal: number;
+    security: string;
+}
+
 export interface NetworkStatus {
     [key: string]: { in_kbps: number, out_kbps: number };
 }

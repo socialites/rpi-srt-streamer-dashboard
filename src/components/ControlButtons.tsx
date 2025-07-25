@@ -3,7 +3,7 @@ import { reboot, restartInstallAndStream, restartService, shutdown } from '../ap
 import { SplitButtons } from './SplitButtons';
 import { Button } from './button';
 
-export function ControlButtons({ refetch, toggleStreamPreview }: { refetch: () => void, toggleStreamPreview: () => void }) {
+export function ControlButtons({ refetch, toggleStreamPreview, toggleNetworkManager }: { refetch: () => void, toggleStreamPreview: () => void, toggleNetworkManager: () => void }) {
 
     const promptReboot = () => {
         toast(<SplitButtons
@@ -38,6 +38,7 @@ export function ControlButtons({ refetch, toggleStreamPreview }: { refetch: () =
     return (
         <div id="buttons" class="flex flex-col gap-2">
             <Button className="bg-blue-500" onClick={toggleStreamPreview}>Toggle Stream Preview</Button>
+            <Button className="bg-blue-500" onClick={toggleNetworkManager}>Manage Network</Button>
             <Button className="bg-blue-500" onClick={() => refetch()}>Force Refresh Status</Button>
             <Button className="bg-yellow-500" onClick={() => restartService('ap')}>Restart Access Point</Button>
             <Button className="bg-yellow-500" onClick={() => restartService('network-watcher')}>Restart Network Watcher</Button>

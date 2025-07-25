@@ -1,4 +1,4 @@
-import type { SystemStatus } from '../types';
+import type { Network, SystemStatus } from '../types';
 
 export async function getHealth() {
     try {
@@ -83,5 +83,66 @@ export async function shutdown() {
     } catch (error) {
         console.error(error)
         throw new Error(`Failed to shutdown: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+export async function getNetworks(): Promise<Network[]> {
+    try {
+        const response = await fetch('/api/wifi/networks')
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`)
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error)
+        throw new Error(`Failed to fetch networks: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+export async function connectToNetwork(ssid: string, password: string) {
+    try {
+        const response = await fetch('/api/wifi/connect', {
+            method: 'POST',
+            body: JSON.stringify({ ssid, password }),
+        })
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`)
+        }
+        return response.ok;
+    } catch (error) {
+        console.error(error)
+        throw new Error(`Failed to connect to network: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+export async function disconnectFromNetwork(ssid: string) {
+    try {
+        const response = await fetch('/api/wifi/disconnect', {
+            method: 'POST',
+            body: JSON.stringify({ ssid }),
+        })
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`)
+        }
+        return response.ok;
+    } catch (error) {
+        console.error(error)
+        throw new Error(`Failed to disconnect from network: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+export async function forgetNetwork(ssid: string) {
+    try {
+        const response = await fetch('/api/wifi/forget', {
+            method: 'POST',
+            body: JSON.stringify({ ssid }),
+        })
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`)
+        }
+        return response.ok;
+    } catch (error) {
+        console.error(error)
+        throw new Error(`Failed to forget network: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }

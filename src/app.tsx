@@ -4,11 +4,13 @@ import { Slide, ToastContainer } from 'react-toastify';
 import { getSystemStatus } from './apis';
 import './app.css';
 import { ControlButtons } from './components/ControlButtons';
+import { NetworkManager } from './components/NetworkManager';
 import { NetworkStatus } from './components/NetworkStatus';
 import StreamPreview from './components/StreamPreview';
 import { SystemStatus } from './components/SystemStatus';
 
 export function App() {
+    const [showNetworkManager, setShowNetworkManager] = useState<boolean>(false);
 
   const { data: systemStatus, refetch, isError, error } = useQuery({
     queryKey: ['systemStatus'],
@@ -31,6 +33,10 @@ export function App() {
     setStreamPreview(!streamPreview);
   }, [streamPreview]);
 
+  const toggleNetworkManager = useCallback(() => {
+    setShowNetworkManager(!showNetworkManager);
+  }, [showNetworkManager]);
+
   return (
     <div class="flex flex-col gap-2 max-w-md items-center justify-center">
         <ToastContainer
@@ -48,8 +54,9 @@ export function App() {
         />
         <SystemStatus systemStatus={systemStatus} isError={isError} />
         <NetworkStatus />
+        {showNetworkManager && <NetworkManager toggleNetworkManager={toggleNetworkManager} />}
         {streamPreview && <StreamPreview />}
-        <ControlButtons refetch={refetch} toggleStreamPreview={toggleStreamPreview} />
+        <ControlButtons refetch={refetch} toggleStreamPreview={toggleStreamPreview} toggleNetworkManager={toggleNetworkManager} />
 
         {isError && <p class="text-center text-sm text-red-500">Error: {error.message}</p>}
     </div>
