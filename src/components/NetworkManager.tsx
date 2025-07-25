@@ -104,17 +104,22 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
 function Form({ onCancel, SSID }: Partial<ToastContentProps> & { onCancel: () => void, SSID: string }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = useCallback(async() => {
+        if (isLoading) return;
         if (password.length < 8) {
             setError('Password must be at least 8 characters long');
             return;
         }
         try {
+            setIsLoading(true);
             await connectToNetwork(SSID, password);
             onCancel();
+            setIsLoading(false);
         } catch (error) {
             setError('Failed to connect to network');
+            setIsLoading(false);
         }
     }, [password, SSID, onCancel]);
 
@@ -123,9 +128,9 @@ function Form({ onCancel, SSID }: Partial<ToastContentProps> & { onCancel: () =>
         <h3 className="text-white text-sm font-semibold">Connect to {SSID}</h3>
         <p className="text-sm">Enter the password for {SSID}</p>
         <form>
-          <input type="password" className="w-full border border-purple-600/40 rounded-md resize-none" value={password} onChange={e => setPassword((e.target as HTMLInputElement).value)} />
+          <input disabled={isLoading} type="password" className="w-full border border-purple-600/40 rounded-md resize-none" value={password} onChange={e => setPassword((e.target as HTMLInputElement).value)} />
         </form>
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Button disabled={isLoading} className={`${isLoading ? 'bg-gray-500' : 'bg-blue-500'}`} onClick={handleSubmit}>{isLoading ? 'Connecting...' : 'Submit'}</Button>
         {error && <p className="text-red-500">{error}</p>}
       </div>
     );
