@@ -84,14 +84,14 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                                     <p>{network.ssid} {network.in_use && '(Connected)'}</p>
                                     <div class="flex flex-row gap-2 text-xs">
                                         <p>Speed: {network.rate}</p>
-                                        <p>Signal Strength: <SignalIcon signal={network.signal} className="w-4 h-4" /></p>
+                                        <p class="flex items-center gap-1">Signal Strength: <SignalIcon signal={network.signal} className="w-4 h-4" /></p>
                                         <p>{network.security}</p>
                                     </div>
                                 </div>
                             </Button>
                             {network.in_use && (
                                 <div class="absolute top-0 right-0 p-2">
-                                    <Button className="bg-red-500 w-4 h-4 text-white text-xs !p-3 flex items-center justify-center rounded-md" onClick={() => promptForgetNetwork(network.ssid)}><Trash2 /></Button>
+                                    <Button className="bg-red-500 w-4 h-4 text-white text-xs !p-0 flex items-center justify-center rounded-md" onClick={() => promptForgetNetwork(network.ssid)}><Trash2 /></Button>
                                 </div>
                             )}
                         </div>
