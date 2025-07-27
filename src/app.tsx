@@ -12,6 +12,8 @@ import { SystemStatus } from './components/SystemStatus';
 export function App() {
     const [showNetworkManager, setShowNetworkManager] = useState<boolean>(false);
 
+    const screen = new URLSearchParams(window.location.search).get('screen');
+
   const { data: systemStatus, refetch, isError, error } = useQuery({
     queryKey: ['systemStatus'],
     placeholderData: {
@@ -40,7 +42,7 @@ export function App() {
   return (
     <div class="flex flex-col gap-2 max-w-md items-center justify-center">
         <ToastContainer
-            position="top-right"
+            position={screen === '0350' ? "top-center" : "top-right"}
             autoClose={5000}
             hideProgressBar={false}
             newestOnTop
@@ -52,7 +54,7 @@ export function App() {
             theme="dark"
             transition={Slide}
         />
-        <SystemStatus systemStatus={systemStatus} isError={isError} />
+        <SystemStatus systemStatus={systemStatus} isError={isError} screen={screen} />
         <NetworkStatus />
         {showNetworkManager && <NetworkManager toggleNetworkManager={toggleNetworkManager} />}
         {streamPreview && <StreamPreview />}
