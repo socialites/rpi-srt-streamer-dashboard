@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import classNames from 'classnames';
 import { useCallback, useState } from 'preact/hooks';
 import { Slide, ToastContainer } from 'react-toastify';
 import { getSystemStatus } from './apis';
@@ -40,7 +41,10 @@ export function App() {
   }, [showNetworkManager]);
 
   return (
-    <div class="flex flex-col gap-2 max-w-md items-center justify-center">
+    <div class={classNames("flex flex-col gap-2 items-center justify-center", {
+        'max-w-md': screen === null,
+        'max-w-xs': screen === '0350',
+    })}>
         <ToastContainer
             position={screen === '0350' ? "top-center" : "top-right"}
             autoClose={5000}
