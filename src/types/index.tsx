@@ -19,3 +19,5 @@ export type Network = {
 export interface NetworkStatus {
     [key: string]: { in_kbps: number, out_kbps: number };
 }
+
+export type ScreenSizes = '0096' | '0350' | null;

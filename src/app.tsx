@@ -9,11 +9,12 @@ import { NetworkManager } from './components/NetworkManager';
 import { NetworkStatus } from './components/NetworkStatus';
 import StreamPreview from './components/StreamPreview';
 import { SystemStatus } from './components/SystemStatus';
+import type { ScreenSizes } from './types';
 
 export function App() {
     const [showNetworkManager, setShowNetworkManager] = useState<boolean>(false);
 
-    const screen = new URLSearchParams(window.location.search).get('screen');
+    const screen = new URLSearchParams(window.location.search).get('screen') as ScreenSizes;
 
   const { data: systemStatus, refetch, isError, error } = useQuery({
     queryKey: ['systemStatus'],
