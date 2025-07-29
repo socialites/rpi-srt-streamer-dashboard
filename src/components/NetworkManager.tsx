@@ -84,7 +84,7 @@ export function NetworkManager({ toggleNetworkManager }: { toggleNetworkManager:
                                     <p>{network.ssid} {network.in_use && '(Connected)'}</p>
                                     <div class="flex flex-row gap-2 text-xs">
                                         <p>Speed: {network.rate}</p>
-                                        <p class="flex items-center gap-1">Signal Strength: <SignalIcon signal={network.signal} className="w-4 h-4" /></p>
+                                        <p class="flex items-center gap-1">Signal Strength: <div className="relative w-4 h-4"><SignalIcon signal={network.signal} className="w-4 h-4 absolute" /><Signal className="w-4 h-4 absolute text-white/25" /></div></p>
                                         <p>{network.security}</p>
                                     </div>
                                 </div>

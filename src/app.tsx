@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { Slide, ToastContainer } from 'react-toastify';
 import { getSystemStatus } from './apis';
 import './app.css';
@@ -40,6 +40,12 @@ export function App() {
   const toggleNetworkManager = useCallback(() => {
     setShowNetworkManager(!showNetworkManager);
   }, [showNetworkManager]);
+
+  useEffect(() => {
+    if (screen === null) {
+        document.body.style.justifyContent = 'center';
+    }
+  }, [screen])
 
   return (
     <div class={classNames("flex flex-col gap-2 items-center justify-center", {
