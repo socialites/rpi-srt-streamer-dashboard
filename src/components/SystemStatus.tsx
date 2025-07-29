@@ -48,6 +48,7 @@ export function SystemStatus({ systemStatus, isError, screen }: { systemStatus: 
                 "text-xl": screen === '0350',
                 "text-4xl": screen === null,
             })}>{systemStatus?.hostname.toUpperCase() || window.location.hostname.toUpperCase()}</h1>
+                <span class="text-white">{window.innerWidth} {window.innerHeight}</span>
             {isError || systemStatus === undefined ? <p class="text-center text-sm text-red-500">Error occurred while fetching system status. See below for more details.</p> : (
                 <>
                     <p class="font-mono text-sm flex flex-col flex-wrap gap-1 text-center"><strong>IP(s):</strong> {systemStatus?.ip.split(' ').map(ip => <span class="font-mono text-sm">{ip}</span>)}</p>
