@@ -7,9 +7,12 @@ import './app.css';
 import { ControlButtons } from './components/ControlButtons';
 import { NetworkManager } from './components/NetworkManager';
 import { NetworkStatus } from './components/NetworkStatus';
+import ScrollButtons from './components/ScrollButtons';
 import StreamPreview from './components/StreamPreview';
 import { SystemStatus } from './components/SystemStatus';
 import type { ScreenSizes } from './types';
+
+
 
 export function App() {
     const [showNetworkManager, setShowNetworkManager] = useState<boolean>(false);
@@ -72,6 +75,8 @@ export function App() {
         <ControlButtons refetch={refetch} toggleStreamPreview={toggleStreamPreview} toggleNetworkManager={toggleNetworkManager} />
 
         {isError && <p class="text-center text-sm text-red-500">Error: {error.message}</p>}
+
+        <ScrollButtons screen={screen} />
     </div>
   )
 }
