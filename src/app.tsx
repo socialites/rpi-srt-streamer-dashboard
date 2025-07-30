@@ -51,7 +51,7 @@ export function App() {
   }, [screen])
 
   return (
-    <div class={classNames("flex flex-col gap-2 items-center justify-center", {
+    <div class={classNames("flex flex-col gap-2 items-center justify-center relative", {
         'max-w-md w-full py-16 px-4': screen === null,
         'max-w-xs w-xs px-2 pb-4': screen === '0350',
     })}>
