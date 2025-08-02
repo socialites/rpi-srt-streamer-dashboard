@@ -6,36 +6,39 @@ interface ScrollButtonsProps {
     screen: ScreenSizes | null;
 }
 
-const abortController = new AbortController();
-
 export default function ScrollButtons({ screen }: ScrollButtonsProps) {
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const upButtonRef = useRef<HTMLButtonElement>(null);
   const downButtonRef = useRef<HTMLButtonElement>(null);
+  const currentDirectionRef = useRef<'up' | 'down' | null>(null);
 
   if (screen === null) {
     return null;
   }
 
   const handleClick = (direction: 'up' | 'down') => {
-    const scrollAmount = direction === 'up' ? -300 : 300;
-    window.scrollBy({
-      top: scrollAmount,
-      behavior: 'smooth'
-    });
+    // Only handle click if not currently scrolling
+    if (!isScrolling) {
+      const scrollAmount = direction === 'up' ? -300 : 300;
+      window.scrollBy({
+        top: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const startContinuousScroll = (direction: 'up' | 'down') => {
     if (isScrolling) return;
 
     setIsScrolling(true);
+    currentDirectionRef.current = direction;
     scrollIntervalRef.current = setInterval(() => {
       window.scrollBy({
         top: direction === 'up' ? -5 : 5,
-        behavior: 'smooth'
+        behavior: 'auto' // Use 'auto' for smoother continuous scrolling
       });
-    }, 1); // 1ms interval for smooth continuous scrolling
+    }, 16); // ~60fps for smoother scrolling
   };
 
   const stopContinuousScroll = () => {
@@ -44,6 +47,12 @@ export default function ScrollButtons({ screen }: ScrollButtonsProps) {
       scrollIntervalRef.current = null;
     }
     setIsScrolling(false);
+    currentDirectionRef.current = null;
+  };
+
+  // Prevent default touch behavior to avoid conflicts
+  const preventDefault = (e: Event) => {
+    e.preventDefault();
   };
 
   useEffect(() => {
@@ -51,46 +60,67 @@ export default function ScrollButtons({ screen }: ScrollButtonsProps) {
     const downButton = downButtonRef.current;
 
     if (upButton) {
-      upButton.addEventListener('mousedown', () => startContinuousScroll('up'), {
-        signal: abortController.signal
+      // Mouse events
+      upButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startContinuousScroll('up');
       });
-      upButton.addEventListener('mouseup', stopContinuousScroll, {
-        signal: abortController.signal
-      });
-      upButton.addEventListener('mouseleave', stopContinuousScroll, {
-        signal: abortController.signal
-      });
-      upButton.addEventListener('touchstart', () => startContinuousScroll('up'), {
-        signal: abortController.signal
-      });
-      upButton.addEventListener('touchend', stopContinuousScroll, {
-        signal: abortController.signal
-      });
+      upButton.addEventListener('mouseup', stopContinuousScroll);
+      upButton.addEventListener('mouseleave', stopContinuousScroll);
+
+      // Touch events for resistive touchscreen
+      upButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startContinuousScroll('up');
+      }, { passive: false });
+
+      upButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        stopContinuousScroll();
+      }, { passive: false });
+
+      upButton.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        stopContinuousScroll();
+      }, { passive: false });
+
+      // Prevent touchmove to avoid scrolling conflicts
+      upButton.addEventListener('touchmove', preventDefault, { passive: false });
     }
 
     if (downButton) {
-      downButton.addEventListener('mousedown', () => startContinuousScroll('down'), {
-        signal: abortController.signal
+      // Mouse events
+      downButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startContinuousScroll('down');
       });
-      downButton.addEventListener('mouseup', stopContinuousScroll, {
-        signal: abortController.signal
-      });
-      downButton.addEventListener('mouseleave', stopContinuousScroll, {
-        signal: abortController.signal
-      });
-      downButton.addEventListener('touchstart', () => startContinuousScroll('down'), {
-        signal: abortController.signal
-      });
-      downButton.addEventListener('touchend', stopContinuousScroll, {
-        signal: abortController.signal
-      });
+      downButton.addEventListener('mouseup', stopContinuousScroll);
+      downButton.addEventListener('mouseleave', stopContinuousScroll);
+
+      // Touch events for resistive touchscreen
+      downButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startContinuousScroll('down');
+      }, { passive: false });
+
+      downButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        stopContinuousScroll();
+      }, { passive: false });
+
+      downButton.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        stopContinuousScroll();
+      }, { passive: false });
+
+      // Prevent touchmove to avoid scrolling conflicts
+      downButton.addEventListener('touchmove', preventDefault, { passive: false });
     }
 
     return () => {
       stopContinuousScroll();
-      abortController.abort();
     };
-  }, [isScrolling]);
+  }, []);
 
   return (
     <>
