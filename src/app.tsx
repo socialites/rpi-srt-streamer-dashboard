@@ -67,7 +67,7 @@ export function App() {
             pauseOnHover
             theme="dark"
             transition={Slide}
-            className={classNames({'!absolute !top-0 !left-0 !right-0': screen === '0350'})}
+            className={classNames({'!absolute !top-0 !w-full': screen === '0350'})}
         />
         <SystemStatus systemStatus={systemStatus} isError={isError} screen={screen} />
         <NetworkStatus />
