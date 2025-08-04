@@ -55,6 +55,7 @@ export function App() {
         'max-w-md w-full py-16 px-4': screen === null,
         'max-w-xs w-xs px-2 pb-4': screen === '0350',
     })}>
+        <ScrollButtons screen={screen} />
         <ToastContainer
             position={screen === '0350' ? "top-center" : "top-right"}
             autoClose={5000}
@@ -77,7 +78,6 @@ export function App() {
 
         {isError && <p class="text-center text-sm text-red-500">Error: {error.message}</p>}
 
-        <ScrollButtons screen={screen} />
     </div>
   )
 }
